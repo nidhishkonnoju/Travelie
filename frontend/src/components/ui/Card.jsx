@@ -1,0 +1,20 @@
+import React from 'react';
+
+const Card = ({ children, title, subtitle, className = '', footer }) => {
+    return (
+        <div className={`card glass ${className}`}>
+            {(title || subtitle) && (
+                <div className="card-header">
+                    {title && <h3 className="card-title">{title}</h3>}
+                    {subtitle && <p className="card-subtitle">{subtitle}</p>}
+                </div>
+            )}
+            <div className="card-body">
+                {children}
+            </div>
+            {footer && <div className="card-footer">{footer}</div>}
+        </div>
+    );
+};
+
+export default Card;
