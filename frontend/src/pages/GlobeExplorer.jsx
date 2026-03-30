@@ -22,7 +22,7 @@ const GlobeExplorer = () => {
             <div className="w-full flex justify-center mb-12 relative cursor-grab active:cursor-grabbing max-w-[1000px] mx-auto">
                 <InteractiveGlobe 
                     packages={packages} 
-                    selectedPackageTitle={selectedPackage?.title} 
+                    onLocationClick={(pkg) => setSelectedPackage(pkg)}
                 />
             </div>
 
