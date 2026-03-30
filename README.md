@@ -1,7 +1,7 @@
 # Travelie Dashboard
 
 A full-stack travel agency platform built with Spring Boot and React, featuring an elegant glassmorphism UI, real-time dashboards, and comprehensive admin tools for managing travel packages, exclusive deals, user bookings, and a centralized user management system.
-Deployed Link: https://nidhish-a22.vercel.app/login
+Deployed Link: https://nidhish-a22.vercel.app
 
 ## Features
 
