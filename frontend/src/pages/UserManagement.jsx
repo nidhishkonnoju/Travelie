@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Shield, UserCheck, UserX, Mail, Search } from 'lucide-react';
+import { Users, Mail, Search, UserX } from 'lucide-react';
 import UserService from '../services/UserService';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
 
 const ROLE_CONFIG = {
-    ADMIN: { label: 'Admin', color: '#6366f1', bg: '#6366f120' },
-    GUIDE: { label: 'Guide', color: '#ec4899', bg: '#ec489920' },
-    TRAVELER: { label: 'Traveler', color: '#10b981', bg: '#10b98120' },
+    ADMIN: { label: 'Admin', color: '#1a1a1a' },
+    GUIDE: { label: 'Guide', color: '#c4a35a' },
+    TRAVELER: { label: 'Traveler', color: '#747878' },
 };
 
 const UserManagement = () => {
@@ -44,17 +41,22 @@ const UserManagement = () => {
     });
 
     return (
-        <div className="admin-page">
-            <div className="page-header mb-3">
-                <h2>User Management</h2>
-                <p className="text-secondary text-small">View and manage all platform users</p>
+        <>
+            <div className="mb-8">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-[#747878] font-semibold mb-4 block">Administration</span>
+                <h1 className="font-headline text-5xl tracking-tighter text-[#1a1a1a]">User Management.</h1>
             </div>
 
-            <div className="flex gap-2 mb-2 flex-wrap">
+            {/* Filters */}
+            <div className="flex gap-3 mb-6">
                 {['ALL', 'ADMIN', 'GUIDE', 'TRAVELER'].map(role => (
                     <button
                         key={role}
-                        className={`btn ${filterRole === role ? 'btn-primary' : 'btn-secondary'}`}
+                        className={`px-4 py-2 rounded-full border text-xs uppercase tracking-widest font-semibold transition-all ${
+                            filterRole === role
+                            ? 'border-[#1a1a1a] bg-[#1a1a1a] text-white'
+                            : 'border-[#e0e0e0] text-[#747878] hover:border-[#1a1a1a] hover:text-[#1a1a1a] bg-transparent'
+                        }`}
                         onClick={() => setFilterRole(role)}
                     >
                         {role === 'ALL' ? 'All Users' : role.charAt(0) + role.slice(1).toLowerCase() + 's'}
@@ -62,62 +64,62 @@ const UserManagement = () => {
                 ))}
             </div>
 
-            <Input
-                placeholder="Search by name or email..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                icon={Search}
-                className="mb-3"
-            />
+            {/* Search */}
+            <div className="border-b border-[#747878]/30 pb-2 mb-8">
+                <input
+                    placeholder="Search by name or email..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="bg-transparent w-full text-sm font-body text-[#1a1a1a] focus:outline-none placeholder:text-[#747878]/50"
+                />
+            </div>
 
-            {loading ? <div className="text-center mt-3">Loading users...</div> : (
-                <div className="users-table-wrapper glass">
-                    <table className="users-table">
+            {loading ? (
+                <div className="min-h-[40vh] flex items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-[#1a1a1a] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            ) : (
+                <div className="bg-white border border-[#eeeeee] overflow-hidden">
+                    <table className="w-full">
                         <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Actions</th>
+                            <tr className="border-b border-[#eeeeee]">
+                                <th className="text-left px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold">User</th>
+                                <th className="text-left px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold">Email</th>
+                                <th className="text-left px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold">Role</th>
+                                <th className="text-right px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filtered.length === 0 && (
-                                <tr><td colSpan={4} className="text-center text-muted py-2">No users found.</td></tr>
+                                <tr><td colSpan={4} className="text-center py-12 text-[#747878] font-body font-light">No users found.</td></tr>
                             )}
                             {filtered.map(user => {
                                 const roleCfg = ROLE_CONFIG[user.role] || ROLE_CONFIG.TRAVELER;
                                 return (
-                                    <tr key={user.id} className="user-row">
-                                        <td>
-                                            <div className="flex items-center gap-2">
-                                                <div className="user-avatar-small">
-                                                    <span>{user.name?.charAt(0).toUpperCase()}</span>
+                                    <tr key={user.id} className="border-b border-[#f3f3f4] hover:bg-[#f9f9f9] transition-colors">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                                                    {user.name?.charAt(0).toUpperCase()}
                                                 </div>
-                                                <span className="font-600">{user.name}</span>
+                                                <span className="font-body font-semibold text-sm text-[#1a1a1a]">{user.name}</span>
                                             </div>
                                         </td>
-                                        <td>
-                                            <div className="flex items-center gap-1 text-secondary text-small">
-                                                <Mail size={14} />
-                                                {user.email}
-                                            </div>
+                                        <td className="px-6 py-4">
+                                            <span className="font-body text-sm text-[#747878] flex items-center gap-1"><Mail size={12} />{user.email}</span>
                                         </td>
-                                        <td>
-                                            <span
-                                                className="role-badge"
-                                                style={{ background: roleCfg.bg, color: roleCfg.color }}
-                                            >
+                                        <td className="px-6 py-4">
+                                            <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: roleCfg.color }}>
                                                 {roleCfg.label}
                                             </span>
                                         </td>
-                                        <td>
-                                            <div className="flex gap-1">
-                                                <Button size="sm" variant="danger" icon={UserX}
-                                                    onClick={() => handleDeactivate(user.id)}>
-                                                    Remove
-                                                </Button>
-                                            </div>
+                                        <td className="px-6 py-4 text-right">
+                                            <button 
+                                                onClick={() => handleDeactivate(user.id)}
+                                                className="text-xs font-body text-red-400 hover:text-red-600 transition-colors flex items-center gap-1 ml-auto bg-transparent"
+                                            >
+                                                <UserX size={14} /> Remove
+                                            </button>
                                         </td>
                                     </tr>
                                 );
@@ -126,7 +128,7 @@ const UserManagement = () => {
                     </table>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

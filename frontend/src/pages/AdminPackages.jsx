@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, MapPin, Clock, Users, Search, X, Check, User as UserIcon } from 'lucide-react';
 import PackageService from '../services/PackageService';
 import UserService from '../services/UserService';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import Input from '../components/ui/Input';
 import { getPackageImage } from '../utils/imageHelper';
 
 const EMPTY_FORM = {
@@ -93,126 +90,162 @@ const AdminPackages = () => {
     };
 
     return (
-        <div className="admin-page">
-            <div className="page-header flex justify-between items-center mb-3">
+        <>
+            <div className="flex justify-between items-start mb-8">
                 <div>
-                    <h2>Manage Packages</h2>
-                    <p className="text-secondary text-small">Add, edit, and manage travel destinations</p>
+                    <span className="text-[10px] uppercase tracking-[0.3em] text-[#747878] font-semibold mb-4 block">Administration</span>
+                    <h1 className="font-headline text-5xl tracking-tighter text-[#1a1a1a]">Manage Packages.</h1>
                 </div>
-                <Button variant="primary" icon={Plus} onClick={openCreate}>New Package</Button>
+                <button onClick={openCreate} className="bg-[#1a1a1a] text-white px-6 py-2 font-body text-xs uppercase tracking-widest font-semibold hover:opacity-80 transition-opacity flex items-center gap-2">
+                    <Plus size={16} /> New Package
+                </button>
             </div>
 
-            <form className="flex gap-2 mb-3" onSubmit={handleSearch}>
-                <Input
-                    placeholder="Search by location or title..."
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    icon={Search}
-                    className="mb-0 flex-1"
-                />
-                <Button type="submit" variant="secondary">Search</Button>
+            <form className="flex gap-3 mb-8" onSubmit={handleSearch}>
+                <div className="flex-1 border-b border-[#747878]/30 pb-2">
+                    <input
+                        placeholder="Search by location or title..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        className="bg-transparent w-full text-sm font-body text-[#1a1a1a] focus:outline-none placeholder:text-[#747878]/50"
+                    />
+                </div>
+                <button type="submit" className="border border-[#1a1a1a] text-[#1a1a1a] px-6 py-1 font-body text-xs uppercase tracking-widest font-semibold hover:bg-[#1a1a1a] hover:text-white transition-all bg-transparent">
+                    Search
+                </button>
             </form>
 
-            {loading ? <div className="text-center mt-3">Loading packages...</div> : (
-                <div className="packages-admin-grid">
+            {loading ? (
+                <div className="min-h-[40vh] flex items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-[#1a1a1a] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            ) : (
+                <div className="flex flex-col gap-4">
                     {packages.map(pkg => (
-                        <Card key={pkg.id} className="package-admin-card">
-                            <div className="flex justify-between items-start mb-2">
-                                <div>
-                                    <h3 className="mb-1">{pkg.title}</h3>
-                                    <div className="flex items-center gap-1 text-secondary text-small">
-                                        <MapPin size={14} />
-                                        <span>{pkg.location}</span>
-                                        <span className="mx-1">·</span>
-                                        <Clock size={14} />
-                                        <span>{pkg.durationDays} Days</span>
-                                        <span className="mx-1">·</span>
-                                        <Users size={14} />
-                                        <span>{pkg.availableSlots ?? '—'} Slots</span>
-                                        {pkg.guideName && (
-                                            <>
-                                                <span className="mx-1">·</span>
-                                                <UserIcon size={14} />
-                                                <span>{pkg.guideName}</span>
-                                            </>
-                                        )}
+                        <div key={pkg.id} className="bg-white border border-[#eeeeee] p-6">
+                            <div className="flex justify-between items-start">
+                                <div className="flex gap-4 items-start flex-1">
+                                    {getPackageImage(pkg.title) && (
+                                        <div className="w-16 h-16 flex-shrink-0 overflow-hidden bg-[#f3f3f4]">
+                                            <img src={getPackageImage(pkg.title)} alt="thumb" className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <h3 className="font-body font-semibold text-[#1a1a1a] mb-1">{pkg.title}</h3>
+                                        <div className="flex flex-wrap items-center gap-3 text-xs text-[#747878] font-body mb-2">
+                                            <span className="flex items-center gap-1"><MapPin size={12} />{pkg.location}</span>
+                                            <span className="flex items-center gap-1"><Clock size={12} />{pkg.durationDays} Days</span>
+                                            <span className="flex items-center gap-1"><Users size={12} />{pkg.availableSlots ?? '—'} Slots</span>
+                                            {pkg.guideName && (
+                                                <span className="flex items-center gap-1"><UserIcon size={12} />{pkg.guideName}</span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-[#747878] font-body font-light line-clamp-1">{pkg.description}</p>
                                     </div>
                                 </div>
-                                {getPackageImage(pkg.title) && (
-                                    <div className="flex-column items-end gap-1">
-                                        <span className="price-badge">${pkg.price}</span>
-                                        <div style={{ width: '48px', height: '48px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0, marginTop: '4px' }}>
-                                            <img src={getPackageImage(pkg.title)} alt="thumb" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        </div>
-                                    </div>
-                                )}
-                                {!getPackageImage(pkg.title) && (
-                                    <span className="price-badge">${pkg.price}</span>
-                                )}
+                                <div className="flex items-center gap-3 flex-shrink-0 ml-4">
+                                    <span className="font-headline text-xl tracking-tight">${pkg.price}</span>
+                                    <button onClick={() => openEdit(pkg)} className="p-2 hover:bg-[#f3f3f4] transition-colors bg-transparent"><Edit size={16} className="text-[#747878]" /></button>
+                                    <button onClick={() => handleDelete(pkg.id)} className="p-2 hover:bg-red-50 transition-colors bg-transparent"><Trash2 size={16} className="text-red-400" /></button>
+                                </div>
                             </div>
-                            <p className="text-secondary text-small mb-2 text-truncate-2">{pkg.description}</p>
-                            <div className="flex gap-2">
-                                <Button size="sm" variant="secondary" icon={Edit} onClick={() => openEdit(pkg)}>Edit</Button>
-                                <Button size="sm" variant="danger" icon={Trash2} onClick={() => handleDelete(pkg.id)}>Delete</Button>
-                            </div>
-                        </Card>
+                        </div>
                     ))}
                     {packages.length === 0 && (
-                        <div className="text-center text-muted py-3">No packages found. Create one!</div>
+                        <div className="text-center py-16">
+                            <p className="text-[#747878] font-body font-light">No packages found. Create one!</p>
+                        </div>
                     )}
                 </div>
             )}
 
+            {/* Modal */}
             {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal-card glass" onClick={e => e.stopPropagation()}>
-                        <div className="flex justify-between items-center mb-2">
-                            <h3>{editTarget ? 'Edit Package' : 'New Package'}</h3>
-                            <button className="icon-btn" onClick={() => setShowModal(false)}><X size={20} /></button>
+                <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setShowModal(false)}>
+                    <div className="bg-white border border-[#eeeeee] w-full max-w-xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                        <div className="flex justify-between items-center p-6 border-b border-[#eeeeee]">
+                            <h3 className="font-headline text-2xl tracking-tight">{editTarget ? 'Edit Package' : 'New Package'}</h3>
+                            <button className="bg-transparent hover:opacity-60 transition-opacity" onClick={() => setShowModal(false)}><X size={20} className="text-[#747878]" /></button>
                         </div>
-                        <form onSubmit={handleSave} className="flex-column gap-2">
-                            <div className="grid grid-2">
-                                <Input label="Title" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
-                                <Input label="Location" value={form.location} icon={MapPin} onChange={e => setForm({ ...form, location: e.target.value })} required />
+                        <form onSubmit={handleSave} className="p-6 flex flex-col gap-5">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Title</label>
+                                    <div className="border-b border-[#747878]/30 pb-2">
+                                        <input className="bg-transparent w-full text-sm font-body text-[#1a1a1a] focus:outline-none" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Location</label>
+                                    <div className="border-b border-[#747878]/30 pb-2">
+                                        <input className="bg-transparent w-full text-sm font-body text-[#1a1a1a] focus:outline-none" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} required />
+                                    </div>
+                                </div>
                             </div>
                             <div>
-                                <label className="input-label">Description</label>
+                                <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Description</label>
                                 <textarea
-                                    className="input-field"
+                                    className="w-full bg-transparent border border-[#eeeeee] p-3 text-sm font-body text-[#1a1a1a] focus:outline-none resize-vertical"
                                     rows={3}
                                     value={form.description}
                                     onChange={e => setForm({ ...form, description: e.target.value })}
                                     required
-                                    style={{ resize: 'vertical' }}
                                 />
                             </div>
-                            <div className="grid grid-2">
-                                <Input label="Price ($)" type="number" min="0" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required />
-                                <Input label="Available Slots" type="number" min="0" value={form.availableSlots} onChange={e => setForm({ ...form, availableSlots: e.target.value })} />
-                            </div>
-                            <div className="grid grid-2">
-                                <Input label="Duration (Days)" type="number" min="1" value={form.durationDays} onChange={e => setForm({ ...form, durationDays: e.target.value })} required />
-                                <Input label="Duration (Nights)" type="number" min="0" value={form.durationNights} onChange={e => setForm({ ...form, durationNights: e.target.value })} />
-                            </div>
-                            <div className="grid grid-2">
-                                <Input label="Rating (0–5)" type="number" min="0" max="5" step="0.1" value={form.rating} onChange={e => setForm({ ...form, rating: e.target.value })} />
+                            <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="input-label">Assign Guide</label>
-                                    <select className="input-field" value={form.guideId} onChange={e => setForm({ ...form, guideId: e.target.value })}>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Price ($)</label>
+                                    <div className="border-b border-[#747878]/30 pb-2">
+                                        <input className="bg-transparent w-full text-sm font-body focus:outline-none" type="number" min="0" step="0.01" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Available Slots</label>
+                                    <div className="border-b border-[#747878]/30 pb-2">
+                                        <input className="bg-transparent w-full text-sm font-body focus:outline-none" type="number" min="0" value={form.availableSlots} onChange={e => setForm({ ...form, availableSlots: e.target.value })} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Duration (Days)</label>
+                                    <div className="border-b border-[#747878]/30 pb-2">
+                                        <input className="bg-transparent w-full text-sm font-body focus:outline-none" type="number" min="1" value={form.durationDays} onChange={e => setForm({ ...form, durationDays: e.target.value })} required />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Duration (Nights)</label>
+                                    <div className="border-b border-[#747878]/30 pb-2">
+                                        <input className="bg-transparent w-full text-sm font-body focus:outline-none" type="number" min="0" value={form.durationNights} onChange={e => setForm({ ...form, durationNights: e.target.value })} />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Rating (0–5)</label>
+                                    <div className="border-b border-[#747878]/30 pb-2">
+                                        <input className="bg-transparent w-full text-sm font-body focus:outline-none" type="number" min="0" max="5" step="0.1" value={form.rating} onChange={e => setForm({ ...form, rating: e.target.value })} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-semibold mb-2 block">Assign Guide</label>
+                                    <select className="w-full bg-transparent border-b border-[#747878]/30 pb-2 text-sm font-body focus:outline-none" value={form.guideId} onChange={e => setForm({ ...form, guideId: e.target.value })}>
                                         <option value="">-- No Guide --</option>
                                         {guides.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
                                     </select>
                                 </div>
                             </div>
-                            <div className="flex gap-2 justify-end mt-2">
-                                <Button type="button" variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
-                                <Button type="submit" variant="primary" icon={Check} loading={saving}>{editTarget ? 'Update' : 'Create'}</Button>
+                            <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-[#eeeeee]">
+                                <button type="button" onClick={() => setShowModal(false)} className="border border-[#eeeeee] text-[#747878] px-6 py-2 font-body text-xs uppercase tracking-widest hover:bg-[#f3f3f4] transition-colors bg-transparent">Cancel</button>
+                                <button type="submit" disabled={saving} className="bg-[#1a1a1a] text-white px-6 py-2 font-body text-xs uppercase tracking-widest font-semibold hover:opacity-80 transition-opacity disabled:opacity-50">
+                                    {saving ? 'Saving...' : (editTarget ? 'Update' : 'Create')}
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

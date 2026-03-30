@@ -169,6 +169,7 @@ a {
 
 button {
   cursor: pointer;
+  background: none;
   border: none;
   outline: none;
   font-family: var(--font-body);
@@ -1726,3 +1727,7 @@ select.input-field option {
     grid-template-columns: 1fr;
   }
 }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
