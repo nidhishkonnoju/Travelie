@@ -1731,3 +1731,87 @@ select.input-field option {
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* ============================================
+   INTERACTIVE GLOBE (cobe v2)
+   ============================================ */
+.globe-container {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.globe-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* CSS Anchor-Positioned Labels */
+.globe-label {
+  position: absolute;
+  font-family: var(--font-body, system-ui);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+  padding: 4px 10px;
+  pointer-events: auto;
+  z-index: 10;
+  cursor: pointer;
+
+  /* Anchor positioning (cobe v2 sets --cobe-{id} anchors) */
+  bottom: anchor(top);
+  left: anchor(center);
+  transform: translate(-50%, -10px);
+
+  /* Appearance — dark editorial pill */
+  background: #1a1a1a;
+  color: #ffffff;
+  transition:
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.globe-label:hover {
+  background: var(--secondary, #866d4b);
+  color: #ffffff;
+}
+
+/* Caret (downward triangle) */
+.globe-label::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid #1a1a1a;
+  transition: border-top-color 0.25s ease;
+}
+
+.globe-label:hover::before {
+  border-top-color: var(--secondary, #866d4b);
+}
+
+/* Responsive globe sizing */
+@media (max-width: 560px) {
+  .globe-container {
+    width: 340px;
+    height: 340px;
+  }
+}
+
+@media (min-width: 561px) and (max-width: 768px) {
+  .globe-container {
+    width: 420px;
+    height: 420px;
+  }
+}
